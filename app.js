@@ -1,6 +1,8 @@
 const form = document.querySelector(".todo_form");
 const input = document.querySelector(".todo_input");
 const todo_container = document.querySelector(".todo_container");
+let deleteBtns;
+let checkboxes;
 
 const addHTML = (todo) => {
   const todoDiv = document.createElement("div");
@@ -12,7 +14,7 @@ const addHTML = (todo) => {
   const todoCb = document.createElement("input");
   todoCb.type = "checkbox";
   todoCb.checked = todo.isCompleted;
-  todoDiv.classList.add("todo_cb");
+  todoCb.classList.add("todo_cb");
 
   const todoText = document.createElement("span");
   todoText.classList.add("todo_text");
@@ -50,6 +52,9 @@ const startConf = () => {
     todos.forEach((todo) => {
       addHTML(todo);
     });
+    deleteBtns = document.querySelectorAll(".todo_delete");
+    deleteBtns = document.querySelectorAll(".todo_cb");
+    console.log(deleteBtns);
   }
 };
 
@@ -74,4 +79,29 @@ const addTodo = (e) => {
   form.reset();
 };
 
+const deleteTodo = (e) => {
+  //  console.log(e.target.parentElement.parentElement);
+  const todo = e.target.parentElement.parentElement;
+  const text = todo.firstChild.children[1].textContent;
+  console.log(text);
+
+  let todos = JSON.parse(localStorage.getItem("todos"));
+  todos = todos.filter((td) => td.text !== text);
+  localStorage.setItem("todos", JSON.stringify(todos));
+  todo.remove();
+};
+const completeTodo = (e) => {
+  //  console.log(e.target.parentElement.parentElement);
+  const todo = e.target.parentElement.parentElement;
+  const text = todo.firstChild.children[1].textContent;
+  console.log(text);
+  let todos = JSON.parse(localStorage.getItem("todos"));
+  todos.forEach((td) => {
+    if (td.text === text) td.isCompleted = !td.isCompleted;
+  });
+  localStorage.setItem("todos", JSON.stringify(todos));
+};
+
 form.addEventListener("submit", addTodo);
+deleteBtns.forEach((btn) => btn.addEventListener("click", deleteTodo));
+checkboxes.forEach((btn) => btn.addEventListener("click", completeTodo));
